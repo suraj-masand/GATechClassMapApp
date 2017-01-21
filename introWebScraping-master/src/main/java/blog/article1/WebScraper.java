@@ -28,18 +28,18 @@ public class WebScraper {
 		client.getOptions().setCssEnabled(false);
 		client.getOptions().setJavaScriptEnabled(false);
 
-        final File file = new File("driver/chromedriver_2_22_mac");
-        System.setProperty("webdriver.chrome.driver", file.getAbsolutePath());
-
-        WebDriver driver = new ChromeDriver();
-        driver.get(baseUrl + queryUrl);
+//        final File file = new File("introWebScraping-master/chromedriver");
+//        System.setProperty("webdriver.chrome.driver", file.getAbsolutePath());
+//
+//        WebDriver driver = new ChromeDriver();
+//        driver.get(baseUrl + queryUrl);
 
 
         try {
 			String searchUrl = baseUrl + queryUrl;
 			HtmlPage page = client.getPage(searchUrl);
 
-			List<HtmlElement> items = (List<HtmlElement>) page.getByXPath("//th[@class='ddtitle']");
+			List<HtmlElement> items = (List<HtmlElement>) page.getByXPath("//table[@class='datadisplaytable']");
 			if(items.isEmpty()){
 				System.out.println("No items found !");
 			}else{
@@ -55,20 +55,19 @@ public class WebScraper {
                     //List<HtmlElement> sublist = (List<HtmlElement>) (page.getByXPath("//table[@class='datadisplaytable']/descendant::table["+i+"]//td[1]"));
 
 
-                    WebElement table_element = driver.findElement(By.id("testTable"));
-                    List<WebElement> tr_collection=table_element.findElements(By.xpath("class('datadisplaytable')/tbody/tr"));
+                    //WebElement table_element = driver.findElement(By.id("testTable"));
+                    //List<HtmlElement> tr_collection=(List<HtmlElement>) page.findByXPath("//th[@class]class('datadisplaytable')/tbody/tr");
 
-                    System.out.println("NUMBER OF ROWS IN THIS TABLE = "+tr_collection.size());
+                    System.out.println("NUMBER OF ROWS IN THIS TABLE = "+items.size());
                     int row_num,col_num;
                     row_num=1;
-                    for(WebElement trElement : tr_collection)
-                    {
-                        List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
-                        System.out.println("NUMBER OF COLUMNS="+td_collection.size());
-                        col_num=1;
-                        for(WebElement tdElement : td_collection)
-                        {
-                            System.out.println("row # "+row_num+", col # "+col_num+ "text="+tdElement.getText());
+                    for (int j = 0; j < items.size(); j++) {
+                        HtmlElement trElement = items.get(j);
+                        List<HtmlElement> td_collection = trElement.getElementsByTagName("td");
+                        System.out.println("NUMBER OF COLUMNS=" + td_collection.size());
+                        col_num = 1;
+                        for (HtmlElement tdElement : td_collection) {
+                            System.out.println("row # " + row_num + ", col # " + col_num + "text=" + tdElement.asText());
                             col_num++;
                         }
                         row_num++;
