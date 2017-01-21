@@ -65,13 +65,22 @@ background-color: grey;
 background-color: #4CAF50;
 border: none;
 color: white;
-padding: 15px 32px;
+padding: 12px 28px;
 text-align: center;
 text-decoration: none;
 display: inline-block;
 font-size: 16px;
 margin: 4px 2px;
 cursor: pointer;
+}
+.button {
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
 }
     </style>
 </head>
@@ -119,7 +128,7 @@ window.onclick = function(event) {
         <input type="text" name="mail" size="25">
         <br><input type="submit"<br>
 
-    <p><button class="button">Button</button></p>
+    <p><button class="button">MAP IT!</button></p>
 
         <h3>Google Maps</h3>
            <div id="map"></div>
