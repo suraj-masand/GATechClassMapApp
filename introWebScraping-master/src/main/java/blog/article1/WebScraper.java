@@ -5,12 +5,15 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
 
+import java.util.Scanner;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import javafx.stage.Stage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,78 +22,116 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class WebScraper {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		//String searchQuery = "iphone 6s" ;
-		String baseUrl = "https://oscar.gatech.edu/pls/bprod/bwckctlg.p_disp_listcrse";
-		String queryUrl = "?term_in=201702&subj_in=CHIN&crse_in=1002&schd_in=%";
-		WebClient client = new WebClient();
-		client.getOptions().setCssEnabled(false);
-		client.getOptions().setJavaScriptEnabled(false);
+        //String searchQuery = "iphone 6s" ;
 
-//        final File file = new File("introWebScraping-master/chromedriver");
-//        System.setProperty("webdriver.chrome.driver", file.getAbsolutePath());
-//
-//        WebDriver driver = new ChromeDriver();
-//        driver.get(baseUrl + queryUrl);
+        String baseUrl = "https://oscar.gatech.edu/pls/bprod/bwckctlg.p_disp_listcrse";
 
+        String[] answers = askClassInfo();
+
+        String queryUrl = "?term_in=201702&subj_in=" + answers[0]
+                + "&crse_in=" + answers[1] + "&schd_in=%";
+
+        String sectionCode = answers[2];
+        String matchingSectionFound = sectionCode;
+
+        WebClient client = new WebClient();
+        client.getOptions().setCssEnabled(false);
+        client.getOptions().setJavaScriptEnabled(false);
 
         try {
-			String searchUrl = baseUrl + queryUrl;
-			HtmlPage page = client.getPage(searchUrl);
+            String searchUrl = baseUrl + queryUrl;
+            HtmlPage page = client.getPage(searchUrl);
 
-			List<HtmlElement> items = (List<HtmlElement>) page.getByXPath("//table[@class='datadisplaytable']");
-			if(items.isEmpty()){
-				System.out.println("No items found !");
-			}else{
-				for (int i = 0; i < items.size(); i++) {
-					HtmlElement htmlItem = items.get(i);
-					//HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//span[@class='txt']/span[@class='pl']/a"));
-					//HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span[@class='txt']/span[@class='l2']/span[@class='price']")) ;
+            List<HtmlElement> items = (List<HtmlElement>) page.getByXPath("//table[@class='datadisplaytable']");
+            if (items.isEmpty()) {
+                System.out.println("No items found !");
+            } else {
 
-					// It is possible that an item doesn't have any price, we set the price to 0.0 in this case
-					//String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText() ;
-					//System.out.println(htmlItem);
-					Item item = new Item();
-                    //List<HtmlElement> sublist = (List<HtmlElement>) (page.getByXPath("//table[@class='datadisplaytable']/descendant::table["+i+"]//td[1]"));
+                Item class1 = new Item();
+                Item class2 = new Item();
 
+                //System.out.println("NUMBER OF ROWS IN THIS TABLE = "+items.size());
+                //int row_num,col_num;
+                //row_num=1;
+                List<HtmlElement> sections = (List<HtmlElement>) page.getByXPath("//th[@class='ddtitle']");
 
-                    //WebElement table_element = driver.findElement(By.id("testTable"));
-                    //List<HtmlElement> tr_collection=(List<HtmlElement>) page.findByXPath("//th[@class]class('datadisplaytable')/tbody/tr");
+                int sectionIndex = 0;
+                boolean foundMatch = false;
 
-                    System.out.println("NUMBER OF ROWS IN THIS TABLE = "+items.size());
-                    int row_num,col_num;
-                    row_num=1;
-                    for (int j = 0; j < items.size(); j++) {
-                        HtmlElement trElement = items.get(j);
-                        List<HtmlElement> td_collection = trElement.getElementsByTagName("td");
-                        System.out.println("NUMBER OF COLUMNS=" + td_collection.size());
-                        col_num = 1;
-                        for (HtmlElement tdElement : td_collection) {
-                            System.out.println("row # " + row_num + ", col # " + col_num + "text=" + tdElement.asText());
-                            col_num++;
-                        }
-                        row_num++;
+                for (int k = 0; k < sections.size(); k++) {
+                    String sectionTitle = sections.get(k).asText();
+                    int lastSpace = sectionTitle.lastIndexOf("- ");
+                    if (sectionCode.equals(sectionTitle.substring(lastSpace + 2))) {
+                        sectionIndex = k;
+                        matchingSectionFound = sectionTitle.substring(lastSpace + 2);
+                        foundMatch = true;
                     }
-                    //item.setDays(htmlItem.asText());
-                        //item.setLocation(htmlItem.asText());
-                        //item.setTitle(itemAnchor.asText());
-                        //item.setUrl( baseUrl + itemAnchor.getHrefAttribute());
+                }
 
-                        //item.setPrice(new BigDecimal(itemPrice.replace("$", "")));
+                if (!foundMatch) {
+                    matchingSectionFound = sections.get(0).asText().substring(sections.get(0).asText().length() - 3).trim();
+                }
+
+                HtmlElement trElement = items.get(sectionIndex + 1);
+                List<HtmlElement> td_collection = trElement.getElementsByTagName("td");
+//                System.out.println("NUMBER OF COLUMNS=" + td_collection.size());
+//                col_num = 1;
+
+                ObjectMapper mapper = new ObjectMapper();
 
 
-                        ObjectMapper mapper = new ObjectMapper();
-                        String jsonString = mapper.writeValueAsString(item);
+                if (td_collection.size() > 0) {
+                    class1.setSection(matchingSectionFound);
+                    class1.setTime(td_collection.get(1).asText());
+                    class1.setDays(td_collection.get(2).asText());
+                    class1.setLocation(td_collection.get(3).asText());
+                    String jsonString1 = mapper.writeValueAsString(class1);
+                    System.out.println(jsonString1);
+                }
 
-                        System.out.println(jsonString);
+                if (td_collection.size() > 7) {
+                    class2.setSection(matchingSectionFound);
+                    class2.setTime(td_collection.get(8).asText());
+                    class2.setDays(td_collection.get(9).asText());
+                    class2.setLocation(td_collection.get(10).asText());
+                    String jsonString2 = mapper.writeValueAsString(class2);
+                    System.out.println(jsonString2);
+                }
 
-				}
-			}
-		} catch(Exception e){
-			e.printStackTrace();
-		}
 
-	}
+//                for (HtmlElement tdElement : td_collection) {
+//                    System.out.println("row # " + row_num + ", col # " + col_num + "text=" + tdElement.asText());
+//                    col_num++;
+//                }
+//                row_num++;
+
+
+
+
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void start(Stage primaryStage) {
+        primaryStage.show();
+    }
+
+    private static String[] askClassInfo() {
+
+        String[] result = new String[3];
+
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter department code, followed by Course #, followed by Section letter(s):");
+        result[0] = scan.nextLine().toUpperCase();
+        result[1] = scan.nextLine();
+        result[2] = scan.nextLine();
+
+        return result;
+    }
 
 }
