@@ -45,7 +45,9 @@
     /* Change color of dropdown links on hover */
     .dropdown-content a:hover {background-color: #f1f1f1}
 
-}
+    /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+    .show {display:block;}
+
 </style>
 </head>
 
@@ -60,8 +62,33 @@
         <a href="#">Link 3</a>
       </div>
     </div>
+
+    <script>
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
     <p>Enter your course number.</p>
         <input type="text" name="mail" size="25">
+
+
 
 </body>
 </html>
