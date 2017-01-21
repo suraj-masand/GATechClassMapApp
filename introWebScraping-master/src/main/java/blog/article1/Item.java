@@ -7,7 +7,8 @@ public class Item {
     private String section;
 	private String time;
 	private String days;
-	private String location;
+	private String building;
+	private String room;
 
     public String getSection() {
         return section;
@@ -33,13 +34,21 @@ public class Item {
 		this.days = days;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getBuilding() {
+		return building;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setBuilding(String building) {
+		this.building = building;
 	}
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
 	
 
 }
