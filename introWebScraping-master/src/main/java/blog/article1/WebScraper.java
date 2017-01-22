@@ -1,24 +1,13 @@
 package blog.article1;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.List;
-
-import java.util.Scanner;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomText;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import javafx.stage.Stage;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class WebScraper {
 
