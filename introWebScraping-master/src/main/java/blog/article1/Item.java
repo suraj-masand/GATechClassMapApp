@@ -4,19 +4,19 @@ import java.math.BigDecimal;
 
 public class Item {
 
-    private String section;
+	private String section;
 	private String time;
 	private String days;
 	private String building;
 	private String room;
 
-    public String getSection() {
-        return section;
-    }
+	public String getSection() {
+		return section;
+	}
 
-    public void setSection(String section) {
-        this.section = section;
-    }
+	public void setSection(String section) {
+		this.section = section;
+	}
 
 	public String getTime() {
 		return time;
@@ -42,13 +42,13 @@ public class Item {
 		this.building = building;
 	}
 
-    public String getRoom() {
-        return room;
-    }
+	public String getRoom() {
+		return room;
+	}
 
-    public void setRoom(String room) {
-        this.room = room;
-    }
-	
+	public void setRoom(String room) {
+		this.room = room;
+	}
+
 
 }
