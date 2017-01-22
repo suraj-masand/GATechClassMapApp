@@ -86,7 +86,7 @@ public class WebScraper {
                     class2.setSection(matchingSectionFound);
                     class2.setTime(td_collection.get(8).asText());
                     class2.setDays(td_collection.get(9).asText());
-                    String location2 = td_collection.get(3).asText();
+                    String location2 = td_collection.get(10).asText();
                     class2.setBuilding(location2.substring(0, location2.lastIndexOf(" ")));
                     class2.setRoom(location2.substring(location2.lastIndexOf(" ") + 1));
                     String jsonString2 = mapper.writeValueAsString(class2);
